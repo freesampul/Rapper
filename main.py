@@ -22,22 +22,21 @@ def manipulate_lyric_string(lyrics):
         m_lyrics = m_lyrics + lyrics[i][1] + "\n\n"
     return m_lyrics
 
-# def export_lyrics_to_mp3(lyrics):
+def export_lyrics_to_mp3(lyrics, voice_id):
+    set_api_key("s")
+    audio = generate(
+        text = lyrics,
+        voice = voice_id,
+        model = "eleven_monolingual_v1"
+    )
+    return audio
+
 def main():
     raw_lyrics = pull_lyrics_from_chatgpt("Kanye West", "I dont care what it look like I'll eat blue waffles for breakfast")
     lyrics = manipulate_lyric_string(raw_lyrics)
     print(lyrics)
-    
-    set_api_key("s")
-    
-    
-    
-    audio = generate(
-    text=lyrics,
-    voice="SnpfyceEOrXnbRjMOh9d",
-    model="eleven_monolingual_v1"
-    )
-
+    audio = export_lyrics_to_mp3(lyrics, "SnpfyceEOrXnbRjMOh9d")
+    print(audio)
     play(audio)
 
 if '__main__' == __name__:
