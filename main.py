@@ -1,7 +1,5 @@
 import os, openai, requests, ffpyplayer
-
 from pydub import AudioSegment
-
 from elevenlabs import clone, generate, play, set_api_key
 from elevenlabs.api import History
 
@@ -24,27 +22,28 @@ def manipulate_lyric_string(lyrics):
         m_lyrics = m_lyrics + lyrics[i][1] + "\n\n"
     return m_lyrics
 
-def export_lyrics_to_mp3(lyrics, voice_id):
+def export_lyrics_to_mp3(lyrics, voice_id, output_path):
     set_api_key("ac0ef1c43902c5b7163ea0a285504a8d")
     audio = generate(
         text = lyrics,
         voice = voice_id,
         model = "eleven_monolingual_v1"
     )
-    return audio
+    with open(output_path, "wb") as file:
+        file.write(audio)
+
+def mix_beat_and_vocals(vocal_path, beat_path):
+    vocals = AudioSegment.from_file(vocal_path, "mp3")
+    beat = AudioSegment.from_file(beat_path, "mp3")
+    return vocals.overlay(beat)
 
 def main():
     raw_lyrics = pull_lyrics_from_chatgpt("Kanye West", "I dont care what it look like I'll eat blue waffles for breakfast")
     lyrics = manipulate_lyric_string(raw_lyrics)
     print(lyrics)
-    audio = export_lyrics_to_mp3(lyrics, "SnpfyceEOrXnbRjMOh9d")
-    with open("outputKanye.mp3", "wb") as file:
-        file.write(audio)
-    vocals = AudioSegment.from_file("outputKanye.mp3", "mp3")
-    beat = AudioSegment.from_file("New_Composition_1.mp3", "mp3")
-    combined = vocals.overlay(beat)
-
-    combined.export("combined.mp3", format='mp3')
+    export_lyrics_to_mp3(lyrics, "SnpfyceEOrXnbRjMOh9d", "Output_Kanye.mp3")
+    mixed_audio = mix_beat_and_vocals("Output_Kanye.mp3", "New_Composition_1.mp3")
+    mixed_audio.export("mixed.mp3", format='mp3')
 
 if '__main__' == __name__:
     main()
