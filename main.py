@@ -4,7 +4,7 @@ from elevenlabs import clone, generate, play, set_api_key
 from elevenlabs.api import History
 
 def pull_lyrics_from_chatgpt(rapper, bar):
-    openai.api_key = "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"
+    openai.api_key = "why you lookin"
     completion = openai.ChatCompletion.create(
         model = "gpt-3.5-turbo",
         messages = [{
